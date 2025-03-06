@@ -37,7 +37,3 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-docker-image-from-ci-cd-1:latest
-
-      - name: Build Docker image
-        run: |
-          docker build -t my-docker-image-from-ci-cd-1 .
