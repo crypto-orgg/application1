@@ -33,9 +33,6 @@ jobs:
           # Verify Docker installation
           docker --version
 
-      - name: Set up Docker
-        uses: docker/setup-docker-action@v4
-
       - name: Install Docker Compose permanently
         run: |
           # Check if docker-compose exists and install if needed
