@@ -1,16 +1,13 @@
-name: Docker Build
-
+name: Docker Build and Deploy
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:  # Allows manual triggering
-
 jobs:
   build:
     runs-on: ubuntu-latest-crypto # specify runner
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -29,10 +26,27 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build Docker image
         run: |
+          # Navigate to application directory if needed
+          cd /home/ec2-user/application1
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-docker-image-from-ci-cd-1:latest .
 
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-docker-image-from-ci-cd-1:latest
+
+      - name: Deploy via Docker Compose
+        run: |
+          # Navigate to the deployments directory where docker-compose.yml is stored
+          cd /home/ec2-user/deployments
+          
+          # Set environment variables for docker-compose
+          export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+          
+          # Pull the latest images
+          docker-compose pull
+          
+          # Restart the services with the new images
+          docker-compose up -d
