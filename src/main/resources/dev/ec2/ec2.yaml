@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Nested stack to create EC2 instance
+
+Parameters:
+  KeyName:
+    Type: String
+    Description: EC2 Key Pair
+  ImageId:
+    Type: String
+    Description: AMI ID
+  SubnetId:
+    Type: String
+    Description: Subnet ID for the instance
+  SecurityGroupId:
+    Type: String
+    Description: ID of an existing security group
+  InstanceType:
+    Type: String
+    Description: EC2 instance type
+  IamInstanceProfile:
+    Type: String
+    Description: Name of the IAM instance profile
+  Ec2Name:
+    Type: String
+    Description: EC2 name
+
+Resources:
+  CryptoEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref ImageId
+      KeyName: !Ref KeyName
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+      IamInstanceProfile: !Ref IamInstanceProfile
+      InstanceType: !Ref InstanceType
+      BlockDeviceMappings:
+        - DeviceName: "/dev/xvda"
+          Ebs:
+            VolumeType: "gp3"
+            Iops: "400"
+            DeleteOnTermination: "true"
+            VolumeSize: "8"
+      Tags:
+        - Key: Name
+          Value: !Ref Ec2Name

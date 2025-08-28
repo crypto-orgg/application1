@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Master template to launch nested stacks for CryptoPrivateHostt and CryptoJumpHost
+
+Resources:
+  CryptoPrivateHosttStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/ec2/ec2.yaml
+      Parameters:
+        KeyName: crypto-pair-new
+        ImageId: ami-05a2d2d0a1020fecd
+        SubnetId: subnet-036921106e7a71243
+        SecurityGroupId: sg-05fafda89bc0c58dc
+        InstanceType: t2.micro
+        IamInstanceProfile: S3CustomRole
+        Ec2Name: CryptoPrivateHostCF
+
+  CryptoJumpHostStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/ec2/ec2.yaml
+      Parameters:
+        KeyName: crypto-pair-new
+        ImageId: ami-05a2d2d0a1020fecd
+        SubnetId: subnet-0ad3c31052cfbfec9
+        SecurityGroupId: sg-0dc1643ed93f3c420
+        InstanceType: t2.micro
+        IamInstanceProfile: EC2-SSM
+        Ec2Name: CryptoJumpHostCF
