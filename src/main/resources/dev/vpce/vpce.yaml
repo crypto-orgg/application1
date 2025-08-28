@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: VPC Endpoint CloudFormation Template
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC Id where the endpoint will be created
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Subnets for the VPC endpoint (for interface endpoints)
+  SecurityGroupIds:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Security groups for the VPC endpoint (for interface endpoints)
+  ServiceName:
+    Type: String
+    Description: AWS service name for the endpoint (e.g., com.amazonaws.us-east-1.s3)
+  EndpointType:
+    Type: String
+    AllowedValues: [Interface, Gateway]
+    Default: Interface
+    Description: Type of VPC endpoint
+
+Resources:
+  VpcEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId: !Ref VpcId
+      ServiceName: !Ref ServiceName
+      VpcEndpointType: !Ref EndpointType
+      SubnetIds: !If
+        - IsInterface
+        - !Ref SubnetIds
+        - !Ref "AWS::NoValue"
+      SecurityGroupIds: !If
+        - IsInterface
+        - !Ref SecurityGroupIds
+        - !Ref "AWS::NoValue"
+
+Conditions:
+  IsInterface: !Equals [!Ref EndpointType, Interface]
+  IsGateway: !Equals [!Ref EndpointType, Gateway]
+
+Outputs:
+  VpcEndpointId:
+    Description: The ID of the VPC Endpoint
+    Value: !Ref VpcEndpoint
+    Export:
+      Name: !Sub "${AWS::StackName}-VpcEndpointId"
