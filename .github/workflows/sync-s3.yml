@@ -22,5 +22,4 @@ jobs:
 
       - name: Sync to S3
         run: |
-          sleep 500
-          aws s3 sync /resources/dev s3://my-crypto-stacks/dev --delete
+          aws s3 sync /home/ec2-user/actions-runner/_work/application1/application1/src/main/resources/dev s3://my-crypto-stacks/dev --delete
