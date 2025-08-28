@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Nested stack to create and attach an Internet Gateway
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC Id to attach the IGW
+
+Resources:
+  MyIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties: {}
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VpcId
+      InternetGatewayId: !Ref MyIGW
+
+Outputs:
+  InternetGatewayId:
+    Description: The IGW Id
+    Value: !Ref MyIGW
+    Export:
+      Name: !Sub "${AWS::StackName}-InternetGatewayId"
