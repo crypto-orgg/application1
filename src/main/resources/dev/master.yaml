@@ -2,6 +2,72 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Master template to launch nested stacks for CryptoPrivateHostt and CryptoJumpHost
 
 Resources:
+  VPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/vpc/vpc.yaml
+      Parameters:
+        CidrBlock: 10.0.0.0/16
+
+  SubnetAStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/subnets/subnet.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+        CidrBlock: 10.0.1.0/24
+        AvailabilityZone: us-east-1a
+
+  SubnetBStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/subnets/subnet.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+        CidrBlock: 10.0.2.0/24
+        AvailabilityZone: us-east-1b
+
+  IGWStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/igw/igw.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+
+  NatGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/nat/nat.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+        PublicSubnetId: !GetAtt SubnetAStack.Outputs.SubnetId
+
+  PrivateRouteTableStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/route/private-route.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+        PrivateSubnetId: !GetAtt SubnetBStack.Outputs.SubnetId
+        NatGatewayId: !GetAtt NatGatewayStack.Outputs.NatGatewayId
+
+  RouteTableStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/route/route.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+        SubnetAId: !GetAtt SubnetAStack.Outputs.SubnetId
+        SubnetBId: !GetAtt SubnetBStack.Outputs.SubnetId
+        InternetGatewayId: !GetAtt IGWStack.Outputs.InternetGatewayId
+
+  SGStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/sg/sg.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+
   CryptoPrivateHosttStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -9,11 +75,21 @@ Resources:
       Parameters:
         KeyName: crypto-pair-new
         ImageId: ami-05a2d2d0a1020fecd
-        SubnetId: subnet-036921106e7a71243
-        SecurityGroupId: sg-05fafda89bc0c58dc
+        SubnetId: !GetAtt SubnetAStack.Outputs.SubnetId
+        SecurityGroupId: !GetAtt SGStack.Outputs.SecurityGroupId
         InstanceType: t2.micro
         IamInstanceProfile: S3CustomRole
         Ec2Name: CryptoPrivateHostCF
+
+  VPCEndpointStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/vpce/vpce.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+        RouteTableIds:
+          - !GetAtt RouteTableStack.Outputs.RouteTableId
+          - !GetAtt PrivateRouteTableStack.Outputs.PrivateRouteTableId
 
   CryptoJumpHostStack:
     Type: AWS::CloudFormation::Stack
@@ -22,8 +98,9 @@ Resources:
       Parameters:
         KeyName: crypto-pair-new
         ImageId: ami-05a2d2d0a1020fecd
-        SubnetId: subnet-0ad3c31052cfbfec9
-        SecurityGroupId: sg-0dc1643ed93f3c420
+        SubnetId: !GetAtt SubnetBStack.Outputs.SubnetId
+        SecurityGroupId: !GetAtt SGStack.Outputs.SecurityGroupId
         InstanceType: t2.micro
         IamInstanceProfile: EC2-SSM
         Ec2Name: CryptoJumpHostCF
+
