@@ -54,7 +54,7 @@ Resources:
   RouteTableStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/route/route.yaml
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/route/public-route.yaml
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
         SubnetAId: !GetAtt SubnetAStack.Outputs.SubnetId
