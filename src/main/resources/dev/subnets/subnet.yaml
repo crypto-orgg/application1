@@ -1,0 +1,30 @@
+# subnet.yaml (Nested Stack)
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Nested stack to create a subnet in an existing VPC
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC Id where the subnet will be created
+  CidrBlock:
+    Type: String
+    Description: CIDR block for the subnet
+  AvailabilityZone:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: Availability Zone for the subnet
+
+Resources:
+  MySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VpcId
+      CidrBlock: !Ref CidrBlock
+      AvailabilityZone: !Ref AvailabilityZone
+      MapPublicIpOnLaunch: true
+
+Outputs:
+  SubnetId:
+    Description: The Subnet Id
+    Value: !Ref MySubnet
+    Export:
+      Name: !Sub "${AWS::StackName}-SubnetId"
