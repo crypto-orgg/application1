@@ -37,7 +37,7 @@ Resources:
   NatGatewayStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/nat/nat.yaml
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/nat/nat-gw.yaml
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
         PublicSubnetId: !GetAtt SubnetAStack.Outputs.SubnetId
