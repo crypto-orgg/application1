@@ -15,7 +15,7 @@ Resources:
       TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/subnets/subnet.yaml
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
-        CidrBlock: 10.0.1.0/28
+        CidrBlock: 10.0.0.0/28
         AvailabilityZone: eu-central-1a
 
   SubnetBStack:
@@ -24,7 +24,7 @@ Resources:
       TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/subnets/subnet.yaml
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
-        CidrBlock: 10.0.2.0/28
+        CidrBlock: 10.0.0.16/28
         AvailabilityZone: eu-central-1b
 
   IGWStack:
