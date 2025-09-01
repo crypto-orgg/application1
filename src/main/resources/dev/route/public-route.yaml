@@ -8,11 +8,8 @@ Parameters:
   SubnetAId:
     Type: AWS::EC2::Subnet::Id
     Description: Subnet A Id
-  SubnetBId:
-    Type: AWS::EC2::Subnet::Id
-    Description: Subnet B Id
   InternetGatewayId:
-    Type: AWS::EC2::InternetGateway::Id
+    Type: String
     Description: IGW Id
 
 Resources:
@@ -32,12 +29,6 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref SubnetAId
-      RouteTableId: !Ref MyRouteTable
-
-  SubnetBRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref SubnetBId
       RouteTableId: !Ref MyRouteTable
 
 Outputs:

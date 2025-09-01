@@ -11,9 +11,6 @@ Parameters:
   SecurityGroupIds:
     Type: List<AWS::EC2::SecurityGroup::Id>
     Description: Security groups for the VPC endpoint (for interface endpoints)
-  ServiceName:
-    Type: String
-    Description: AWS service name for the endpoint (e.g., com.amazonaws.us-east-1.s3)
   EndpointType:
     Type: String
     AllowedValues: [Interface, Gateway]

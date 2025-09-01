@@ -24,15 +24,20 @@ Parameters:
     Type: String
     Description: EC2 name
 
+  AssociatePublicIpAddress:
+    Type: String
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'false'
+    Description: Whether to associate a public IP address (set to 'true' for jumphost)
+
 Resources:
   CryptoEC2:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: !Ref ImageId
       KeyName: !Ref KeyName
-      SubnetId: !Ref SubnetId
-      SecurityGroupIds:
-        - !Ref SecurityGroupId
       IamInstanceProfile: !Ref IamInstanceProfile
       InstanceType: !Ref InstanceType
       BlockDeviceMappings:
@@ -45,3 +50,9 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref Ec2Name
+      NetworkInterfaces:
+        - DeviceIndex: 0
+          SubnetId: !Ref SubnetId
+          AssociatePublicIpAddress: !Ref AssociatePublicIpAddress
+          GroupSet:
+            - !Ref SecurityGroupId

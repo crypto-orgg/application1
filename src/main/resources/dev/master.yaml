@@ -58,7 +58,6 @@ Resources:
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
         SubnetAId: !GetAtt SubnetAStack.Outputs.SubnetId
-        SubnetBId: !GetAtt SubnetBStack.Outputs.SubnetId
         InternetGatewayId: !GetAtt IGWStack.Outputs.InternetGatewayId
 
   SGStack:
@@ -68,30 +67,16 @@ Resources:
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
 
-  CryptoPrivateHosttStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/ec2/ec2.yaml
-      Parameters:
-        KeyName: crypto-pair-new
-        ImageId: ami-05a2d2d0a1020fecd
-        SubnetId: !GetAtt SubnetAStack.Outputs.SubnetId
-        SecurityGroupId: !GetAtt SGStack.Outputs.SecurityGroupId
-        InstanceType: t2.micro
-        IamInstanceProfile: S3CustomRole
-        Ec2Name: CryptoPrivateHostCF
+#  VPCEndpointStack:
+#    Type: AWS::CloudFormation::Stack
+#    Properties:
+#      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/vpce/vpce.yaml
+#      Parameters:
+#        VpcId: !GetAtt VPCStack.Outputs.VpcId
+#        RouteTableIds: !Join [",", [!GetAtt RouteTableStack.Outputs.RouteTableId,
+#                                    !GetAtt PrivateRouteTableStack.Outputs.PrivateRouteTableId]]
 
-  VPCEndpointStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/vpce/vpce.yaml
-      Parameters:
-        VpcId: !GetAtt VPCStack.Outputs.VpcId
-        RouteTableIds:
-          - !GetAtt RouteTableStack.Outputs.RouteTableId
-          - !GetAtt PrivateRouteTableStack.Outputs.PrivateRouteTableId
-
-  CryptoJumpHostStack:
+  CryptoPrivateHostStack:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/ec2/ec2.yaml
@@ -101,5 +86,20 @@ Resources:
         SubnetId: !GetAtt SubnetBStack.Outputs.SubnetId
         SecurityGroupId: !GetAtt SGStack.Outputs.SecurityGroupId
         InstanceType: t2.micro
+        IamInstanceProfile: S3CustomRole
+        Ec2Name: CryptoPrivateHostCF
+        AssociatePublicIpAddress: 'false'
+
+  CryptoJumpHostStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/ec2/ec2.yaml
+      Parameters:
+        KeyName: crypto-pair-new
+        ImageId: ami-05a2d2d0a1020fecd
+        SubnetId: !GetAtt SubnetAStack.Outputs.SubnetId
+        SecurityGroupId: !GetAtt SGStack.Outputs.SecurityGroupId
+        InstanceType: t2.micro
         IamInstanceProfile: EC2-SSM
         Ec2Name: CryptoJumpHostCF
+        AssociatePublicIpAddress: 'true'
