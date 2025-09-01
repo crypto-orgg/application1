@@ -7,7 +7,7 @@ Resources:
     Properties:
       TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/vpc/vpc.yaml
       Parameters:
-        CidrBlock: 10.0.0.0/16
+        CidrBlock: 10.0.0.0/27
 
   SubnetAStack:
     Type: AWS::CloudFormation::Stack
@@ -15,8 +15,8 @@ Resources:
       TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/subnets/subnet.yaml
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
-        CidrBlock: 10.0.1.0/24
-        AvailabilityZone: us-east-1a
+        CidrBlock: 10.0.1.0/28
+        AvailabilityZone: eu-central-1a
 
   SubnetBStack:
     Type: AWS::CloudFormation::Stack
@@ -24,8 +24,8 @@ Resources:
       TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/subnets/subnet.yaml
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
-        CidrBlock: 10.0.2.0/24
-        AvailabilityZone: us-east-1b
+        CidrBlock: 10.0.2.0/28
+        AvailabilityZone: eu-central-1b
 
   IGWStack:
     Type: AWS::CloudFormation::Stack
@@ -103,4 +103,3 @@ Resources:
         InstanceType: t2.micro
         IamInstanceProfile: EC2-SSM
         Ec2Name: CryptoJumpHostCF
-
