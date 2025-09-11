@@ -42,14 +42,14 @@ Resources:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
         PublicSubnetId: !GetAtt SubnetAStack.Outputs.SubnetId
 
-  PrivateRouteTableStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/route/private-route.yaml
-      Parameters:
-        VpcId: !GetAtt VPCStack.Outputs.VpcId
-        PrivateSubnetId: !GetAtt SubnetBStack.Outputs.SubnetId
-        NatGatewayId: !GetAtt NatGatewayStack.Outputs.NatGatewayId
+#  PrivateRouteTableStack:
+#    Type: AWS::CloudFormation::Stack
+#    Properties:
+#      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/route/private-route.yaml
+#      Parameters:
+#        VpcId: !GetAtt VPCStack.Outputs.VpcId
+#        PrivateSubnetId: !GetAtt SubnetBStack.Outputs.SubnetId
+#        NatGatewayId: !GetAtt NatGatewayStack.Outputs.NatGatewayId
 
   RouteTableStack:
     Type: AWS::CloudFormation::Stack
@@ -58,6 +58,7 @@ Resources:
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
         SubnetAId: !GetAtt SubnetAStack.Outputs.SubnetId
+        SubnetBId: !GetAtt SubnetBStack.Outputs.SubnetId
         InternetGatewayId: !GetAtt IGWStack.Outputs.InternetGatewayId
 
   SGStack:
@@ -103,3 +104,13 @@ Resources:
         IamInstanceProfile: EC2-SSM
         Ec2Name: CryptoJumpHostCF
         AssociatePublicIpAddress: 'true'
+
+  LoadBalancerStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/load-balancer/alb.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+        SubnetAId: !GetAtt SubnetAStack.Outputs.SubnetId
+        SubnetBId: !GetAtt SubnetBStack.Outputs.SubnetId
+        InstanceId: !GetAtt CryptoJumpHostStack.Outputs.InstanceId

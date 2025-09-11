@@ -56,3 +56,10 @@ Resources:
           AssociatePublicIpAddress: !Ref AssociatePublicIpAddress
           GroupSet:
             - !Ref SecurityGroupId
+
+Outputs:
+  InstanceId:
+    Description: ID of the created EC2 instance
+    Value: !Ref CryptoEC2
+    Export:
+      Name: !Sub "${AWS::StackName}-InstanceId"
