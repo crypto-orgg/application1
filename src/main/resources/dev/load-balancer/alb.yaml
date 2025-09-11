@@ -32,7 +32,7 @@ Resources:
   TargetGroup1:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: MyTargetGroup
+      Name: MyTargetGroup1
       Port: 80
       Protocol: HTTP
       VpcId: !Ref VpcId
@@ -50,7 +50,7 @@ Resources:
   TargetGroup2:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: MyTargetGroup
+      Name: MyTargetGroup2
       Port: 80
       Protocol: HTTP
       VpcId: !Ref VpcId
