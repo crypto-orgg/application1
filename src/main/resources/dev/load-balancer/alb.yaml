@@ -80,6 +80,10 @@ Resources:
       LoadBalancerArn: !Ref ApplicationLoadBalancer
       Port: 80
       Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup1 
+
 
   ListenerRuleV1:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
