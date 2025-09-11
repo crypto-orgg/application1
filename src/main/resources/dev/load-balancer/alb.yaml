@@ -71,10 +71,32 @@ Resources:
       LoadBalancerArn: !Ref ApplicationLoadBalancer
       Port: 80
       Protocol: HTTP
-      DefaultActions:
-        - Type: forward
-          TargetGroupArn: !Ref TargetGroup
 
+  ListenerRuleV1:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !Ref Listener
+      Priority: 1
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /nginx/*
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup1
+
+    ListenerRuleV2:
+      Type: AWS::ElasticLoadBalancingV2::ListenerRule
+      Properties:
+        ListenerArn: !Ref Listener
+        Priority: 2
+        Conditions:
+          - Field: path-pattern
+            Values:
+              - /httpd/*
+        Actions:
+          - Type: forward
+            TargetGroupArn: !Ref TargetGroup2
 
 Outputs:
   LoadBalancerDNS:
