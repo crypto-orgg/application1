@@ -85,18 +85,18 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup1
 
-    ListenerRuleV2:
-      Type: AWS::ElasticLoadBalancingV2::ListenerRule
-      Properties:
-        ListenerArn: !Ref Listener
-        Priority: 2
-        Conditions:
-          - Field: path-pattern
-            Values:
-              - /httpd/*
-        Actions:
-          - Type: forward
-            TargetGroupArn: !Ref TargetGroup2
+  ListenerRuleV2:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !Ref Listener
+      Priority: 2
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /httpd/*
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup2
 
 Outputs:
   LoadBalancerDNS:
