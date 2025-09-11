@@ -30,7 +30,7 @@ Resources:
     Properties:
       Name: MyApplicationLoadBalancer
       Subnets: !Ref SubnetIds
-      SecurityGroupIngress:
+      SecurityGroups:
         - !Ref LoadBalancerSecurityGroup
       Scheme: internet-facing
       Type: application
