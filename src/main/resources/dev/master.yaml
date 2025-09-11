@@ -111,6 +111,9 @@ Resources:
       TemplateURL: https://s3.amazonaws.com/my-crypto-stacks/load-balancer/alb.yaml
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
-        SubnetAId: !GetAtt SubnetAStack.Outputs.SubnetId
-        SubnetBId: !GetAtt SubnetBStack.Outputs.SubnetId
-        InstanceId: !GetAtt CryptoJumpHostStack.Outputs.InstanceId
+        SubnetIds:
+          Fn::Join:
+            - ","
+            - - !GetAtt SubnetAStack.Outputs.SubnetId
+              - !GetAtt SubnetBStack.Outputs.SubnetId
+        InstanceId1: !GetAtt CryptoJumpHostStack.Outputs.InstanceId
